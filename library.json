@@ -1,0 +1,22 @@
+{
+  "name": "STM32CAN",
+  "version": "1.0.0",
+  "description": "simple CAN library for stm32 devices using ST's official HAL layer, this include the ST supported Arduino",
+  "keywords": "stm32, can, f103, hal",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/vell001/STM32CAN.git"
+  },
+  "authors":
+  [
+    {
+      "name": "Vell He",
+      "email": "vell001@qq.com",
+      "url": "https://vell001.ml"
+    }
+  ],
+  "homepage": "https://github.com/vell001/STM32CAN.git",
+  "frameworks": ["arduino", "stm32cube"],
+  "platforms": ["ststm32"]
+}

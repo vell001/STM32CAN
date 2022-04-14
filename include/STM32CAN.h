@@ -161,7 +161,7 @@ public:
 
     uint32_t available( void );
 
-    bool readdebug(CAN_message_t &msg); // For debug purpose, read CAN message if interupt not is working
+    bool readDirect(CAN_message_t &msg); // For debug purpose, read CAN message if interupt not is working
 
     bool setFilter( uint32_t FilterID, uint32_t FilterMask, uint8_t FilterBank, bool IDStdOrExt );
 
@@ -183,8 +183,6 @@ public:
 
     /* This needs to be public as its caled from interupt */
     bool addToRingBuffer(RingbufferTypeDef &ring, const CAN_message_t &msg);
-
-
 protected:
     uint16_t sizeRxBuffer;
     uint16_t sizeTxBuffer;
@@ -206,7 +204,6 @@ private:
 
     bool     _canIsActive = false;
     int      _portNumber = 0;
-
     /* set by constructor */
     CAN_HandleTypeDef *n_pCanHandle;
 

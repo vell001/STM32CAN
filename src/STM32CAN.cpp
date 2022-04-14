@@ -53,7 +53,7 @@ int stm32Can::init( CAN_HandleTypeDef* CanHandle, int baudrate, bool loopBack, b
     if ( _canIsActive ) return 0;
 
 
-        CAN_FilterTypeDef sFilterConfig;
+    CAN_FilterTypeDef sFilterConfig;
     GPIO_InitTypeDef GPIO_InitStruct;
 
     DEBUG("stm32Can:Begin");
@@ -80,7 +80,7 @@ int stm32Can::init( CAN_HandleTypeDef* CanHandle, int baudrate, bool loopBack, b
             /* CAN1 RX GPIO pin configuration */
             GPIO_InitStruct.Pin = GPIO_PIN_8;
             GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-            GPIO_InitStruct.Pull = GPIO_NOPULL;
+            GPIO_InitStruct.Pull = GPIO_PULLUP;
             HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
             GPIO_InitStruct.Pin = GPIO_PIN_9;
             GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -102,7 +102,8 @@ int stm32Can::init( CAN_HandleTypeDef* CanHandle, int baudrate, bool loopBack, b
 
         /*##-3- Configure the NVIC #################################################*/
         /* NVIC configuration for CAN1 Reception complete interrupt */
-        HAL_NVIC_SetPriority( CAN1_RX0_IRQn, 4, 0 );
+        HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_1);
+        HAL_NVIC_SetPriority( CAN1_RX0_IRQn, 1, 0 );
         HAL_NVIC_EnableIRQ( CAN1_RX0_IRQn );
 
         CanHandle->Instance = CAN1;
@@ -165,6 +166,10 @@ int stm32Can::init( CAN_HandleTypeDef* CanHandle, int baudrate, bool loopBack, b
 
     /* Calculate and set baudrate */
     calculateBaudrate( CanHandle, baudrate );
+//    CanHandle->Init.SyncJumpWidth = CAN_SJW_1TQ;
+//    CanHandle->Init.TimeSeg1 = CAN_BS1_2TQ;
+//    CanHandle->Init.TimeSeg2 = CAN_BS1_3TQ;
+//    CanHandle->Init.Prescaler = 12;
 
     /* check if loopback is set to true */
     if ( loopBack ) {
@@ -172,8 +177,10 @@ int stm32Can::init( CAN_HandleTypeDef* CanHandle, int baudrate, bool loopBack, b
     }
 
     /*Initializes CAN */
-    if(HAL_CAN_Init( CanHandle ) != HAL_OK){
+    int code  = HAL_CAN_Init( CanHandle );
+    if(code != HAL_OK){
         DEBUG("stm32Can - error init");
+        DEBUG(code);
         return -1;
     }
 
@@ -277,7 +284,7 @@ bool stm32Can::read(CAN_message_t &msg) {
     return ret;
 }
 
-bool stm32Can::readdebug(CAN_message_t &msg) {
+bool stm32Can::readDirect(CAN_message_t &msg) {
     bool ret;
     CAN_RxHeaderTypeDef   RxHeader;
 
@@ -625,6 +632,7 @@ uint32_t stm32Can::getAPB1Clock()
 
     return apb1Clock;
 }
+
 
 /* Interupt functions */
 

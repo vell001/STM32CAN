@@ -1,6 +1,6 @@
 {
   "name": "STM32CAN",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "simple CAN library for stm32 devices using ST's official HAL layer, this include the ST supported Arduino",
   "keywords": "stm32, can, f103, hal",
   "repository":

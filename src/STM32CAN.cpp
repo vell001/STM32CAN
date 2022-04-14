@@ -166,16 +166,14 @@ int stm32Can::init( CAN_HandleTypeDef* CanHandle, int baudrate, bool loopBack, b
 
     /* Calculate and set baudrate */
     calculateBaudrate( CanHandle, baudrate );
-//    CanHandle->Init.SyncJumpWidth = CAN_SJW_1TQ;
-//    CanHandle->Init.TimeSeg1 = CAN_BS1_2TQ;
-//    CanHandle->Init.TimeSeg2 = CAN_BS1_3TQ;
-//    CanHandle->Init.Prescaler = 12;
 
     /* check if loopback is set to true */
     if ( loopBack ) {
         CanHandle->Init.Mode = CAN_MODE_LOOPBACK;
     }
 
+    /* exit from sleep mode before init, adapt to GD32 */
+    CanHandle->Instance->MCR &= (~(uint32_t) CAN_MCR_SLEEP);
     /*Initializes CAN */
     int code  = HAL_CAN_Init( CanHandle );
     if(code != HAL_OK){
